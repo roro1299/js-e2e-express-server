@@ -21,3 +21,21 @@ steps:
   displayName: 'npm install and build'
 
   
+- task: ArchiveFiles@2
+  inputs:
+    rootFolderOrFile: '$(System.DefaultWorkingDirectory)'
+    includeRootFolder: false
+    archiveType: 'zip'
+    archiveFile: '$(Build.ArtifactStagingDirectory)/app.zip'
+    replaceExistingArchive: true
+  displayName: 'Crear paquete ZIP'
+
+# La siguiente tarea despliega el zip usando la conexión que acabas de crear.
+- task: AzureWebApp@1
+  inputs:
+    # Usamos el nombre 'conexion' que acabas de guardar [cite: 390]
+    azureSubscription: 'conexion' 
+    # Sustituye 'NOMBRE_DE_TU_APPSERVICE' por el nombre que creaste en Azure
+    appName: 'utscproy2025' 
+    package: '$(Build.ArtifactStagingDirectory)/app.zip'
+  displayName: 'Desplegar en Azure Web App'
